@@ -58,5 +58,5 @@ class Location(object):
         return self.location.distance(other.location)
 
     def __str__(self):
-        return "{lat}-{lon}".format(lat=self.location.latitude,
+        return "Lat: {lat} Lon: {lon}".format(lat=self.location.latitude,
                 lon=self.location.longitude)

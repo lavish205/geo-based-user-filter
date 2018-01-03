@@ -1,9 +1,16 @@
 import json
+import os
 
 from src.coordinate import Location, Coordinate
 from src.customer import Customer, CustomerFactory
+from src.exception import InvalidCustomerDataFilePath
 from src.filters import FilterCriteria
 
+def get_customer_filepath():
+    """
+    return absolute path of customer data file
+    """
+    return os.path.realpath('customer_data.txt')
 
 def get_customers(input_file):
     """
@@ -11,16 +18,19 @@ def get_customers(input_file):
     :returns list of customer object
     """
     customers = []
-    with open(input_file, 'rb') as f:
-        for line in f:
-            data = json.loads(line.strip())
-            customer = CustomerFactory.create(
-                    data['user_id'],
-                    data['name'],
-                    data['latitude'],
-                    data['longitude'],
-                    )
-            customers.append(customer)
+    try:
+        with open(input_file, 'rb') as f:
+            for line in f:
+                data = json.loads(line.strip())
+                customer = CustomerFactory.create(
+                        data['user_id'],
+                        data['name'],
+                        data['latitude'],
+                        data['longitude'],
+                        )
+                customers.append(customer)
+    except IOError:
+        raise InvalidCustomerDataFilePath()
     return customers
 
 
@@ -31,7 +41,7 @@ def get_customer_within_radius(customers, origin, filter_criteria):
     invited_customers = []
 
     for customer in customers:
-        distance = customer.location.distance(origin)
+        distance = customer.location.distance_from(origin)
 
         if filter_criteria.satisfies(distance):
             invited_customers.append(customer)

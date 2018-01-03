@@ -1,18 +1,23 @@
-
 from math import radians, cos, sin, asin, sqrt
 
-class InvalidLatLonException(Exception):
-    def __init__(self, throwable):
-        self.message = throwable.message
+from exception import InvalidLatLonException
 
 class Coordinate(object):
     """
     """
     def __init__(self, lat, lon):
-        self.latitude = lat
-        self.longitude = lon
+        self._latitude = lat
+        self._longitude = lon
 
-    def distance(self, other):
+    @property
+    def latitude(self):
+        return self._latitude
+
+    @property
+    def longitude(self):
+        return self._longitude
+
+    def distance_from(self, other):
         """
         Calculate the great circle distance between two points
         on the earth (specified in decimal degrees)
@@ -27,7 +32,7 @@ class Coordinate(object):
         a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
         c = 2 * asin(sqrt(a))
         r = 6371 # Radius of earth in kilometers. Use 3956 for miles
-        return c * r
+        return abs(c * r)
 
     @classmethod
     def createFrom(cls, lat, lon):
@@ -35,7 +40,7 @@ class Coordinate(object):
             lat = float(lat)
             lon = float(lon)
         except ValueError, e:
-            raise InvalidLatLonException(e)
+            raise InvalidLatLonException(e.message)
 
         return cls(lat, lon)
 
@@ -54,8 +59,8 @@ class Location(object):
     def location(self):
         return self._coordinate
 
-    def distance(self, other):
-        return self.location.distance(other.location)
+    def distance_from(self, other):
+        return self.location.distance_from(other.location)
 
     def __str__(self):
         return "Lat: {lat} Lon: {lon}".format(lat=self.location.latitude,

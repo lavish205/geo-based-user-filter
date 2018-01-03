@@ -12,7 +12,7 @@ class WithinRadiusFilterCriteria(object):
     def satisfies(self, distance):
         """
         """
-        return abs(distance) <= self.radius
+        return distance <= self.radius
 
 class BetweenRadiusFilterCriteria(object):
     """
@@ -33,7 +33,7 @@ class BetweenRadiusFilterCriteria(object):
     def satisfies(self, distance):
         """
         """
-        distance = abs(distance)
+        distance = distance
         return self.radius1 <= distance <= self.radius2
 
 class FilterCriteria(object):

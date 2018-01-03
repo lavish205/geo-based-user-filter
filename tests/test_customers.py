@@ -1,11 +1,9 @@
 import json
-import os
 import unittest
 
-from main import get_customers, get_customer_filepath
-from src.coordinate import Coordinate, Location
+from main import get_customers, get_file_path
 from src.customer import CustomerFactory, Customer
-from src.exception import InvalidCustomerDataFilePath
+from src.exception import InvalidFilePathException
 
 
 class TestCustomer(unittest.TestCase):
@@ -16,12 +14,14 @@ class TestCustomer(unittest.TestCase):
         self.lon = -6.257664
         self.user_id = 1
         self.name = 'Intercom'
-        self.file_path = get_customer_filepath()
+        self.city = 'dublin'
+        self.filename = 'customer_data.txt'
+        self.file_path = get_file_path(self.filename)
         self.invalid_file_path = '/random/path/file.txt'
 
     def test_create_customer(self):
         customer = CustomerFactory.create(
-            self.user_id, self.name, self.lat, self.lon)
+            self.user_id, self.name, self.city, self.lat, self.lon)
         self.assertEqual(type(customer), Customer)
 
     def test_get_customers_from_input_file(self):
@@ -32,7 +32,7 @@ class TestCustomer(unittest.TestCase):
             self.assertEqual(type(customer), Customer)
 
     def test_get_customer_from_invalid_input_file(self):
-        with self.assertRaises(InvalidCustomerDataFilePath):
+        with self.assertRaises(InvalidFilePathException):
             get_customers(self.invalid_file_path)
 
     def test_validate_input_file(self):

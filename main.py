@@ -1,73 +1,21 @@
-import json
-import os
 
-from src.coordinate import Location, Coordinate
-from src.customer import Customer, CustomerFactory
-from src.exception import InvalidCustomerDataFilePath
+from src.location import Location
 from src.filters import FilterCriteria
+from src.utils import get_customer_within_radius, get_customers, get_file_path, report
 
-def get_customer_filepath():
-    """
-    return absolute path of customer data file
-    """
-    return os.path.realpath('customer_data.txt')
-
-def get_customers(input_file):
-    """
-    Creates the list of customer objects by parsing input file.
-    :returns list of customer object
-    """
-    customers = []
-    try:
-        with open(input_file, 'rb') as f:
-            for line in f:
-                data = json.loads(line.strip())
-                customer = CustomerFactory.create(
-                        data['user_id'],
-                        data['name'],
-                        data['latitude'],
-                        data['longitude'],
-                        )
-                customers.append(customer)
-    except IOError:
-        raise InvalidCustomerDataFilePath()
-    return customers
-
-
-
-def get_customer_within_radius(customers, origin, filter_criteria):
-    """
-    """
-    invited_customers = []
-
-    for customer in customers:
-        distance = customer.location.distance_from(origin)
-
-        if filter_criteria.satisfies(distance):
-            invited_customers.append(customer)
-    invited_customers.sort(key=(lambda x: x.user_id))
-    return invited_customers
-
-def report(customers_data, fields):
-    """
-    """
-    if not isinstance(fields, list):
-        raise ValueError("fields must be an instance of list")
-
-    for customer in customers_data:
-        values = [str(getattr(customer, field)) for field in fields]
-
-        line = " ".join([str(x) for x in values])
-        print line
 
 if __name__ == '__main__':
+    # constants
     RADIUS = 100
     ORIGIN_LAT = 53.339428
     ORIGIN_LON = -6.257664
-    origin_coordinate = Coordinate.createFrom(ORIGIN_LAT, ORIGIN_LON)
-    origin = Location('dublin', origin_coordinate)
-    customers = get_customers('src/customer_data.txt')
-    filter_criteria = FilterCriteria.get_filter(RADIUS)
+    FILENAME = 'customer_data.txt'
+
+    # create location object of origin i.e. dublin to compare distance with other location
+    origin = Location('dublin', ORIGIN_LAT, ORIGIN_LON)
+    file_path = get_file_path(FILENAME)  # get file path of customer data file
+    customers = get_customers(file_path)
+    filter_criteria = FilterCriteria.get_filter(0, RADIUS)
     invited_customers = get_customer_within_radius(customers, origin, filter_criteria)
-    fields = ['user_id', 'name']
+    fields = ['user_id', 'name']  # fields that need to be printed of customers
     report(invited_customers, fields)

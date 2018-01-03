@@ -1,21 +1,6 @@
-class WithinRadiusFilterCriteria(object):
-    """
-    """
-
-    def __init__(self, radius):
-        self._radius = radius
-
-    @property
-    def radius(self):
-        return self._radius
-
-    def satisfies(self, distance):
-        """
-        """
-        return distance <= self.radius
-
 class BetweenRadiusFilterCriteria(object):
     """
+    Filter criteria for distance between two radius
     """
 
     def __init__(self, radius1, radius2):
@@ -36,10 +21,13 @@ class BetweenRadiusFilterCriteria(object):
         distance = distance
         return self.radius1 <= distance <= self.radius2
 
+
 class FilterCriteria(object):
+    """
+    Return filter criteria based on the condition
+    This is required because if we have more filter criteria we can handle
+    that logic here and return the required filter
+    """
     @classmethod
-    def get_filter(self, radius1, radius2=None):
-        if radius2:
-            return BetweenRadiusFilterCriteria(radius1, radius2)
-        else:
-            return WithinRadiusFilterCriteria(radius1)
+    def get_filter(cls, radius1, radius2):
+        return BetweenRadiusFilterCriteria(radius1, radius2)

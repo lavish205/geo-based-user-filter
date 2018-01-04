@@ -14,6 +14,10 @@ class TestLocation(unittest.TestCase):
         self.city = 'dublin'
 
     def test_create_location(self):
+        """
+        Test for location object creation flow
+        :return:
+        """
         location = Location.createFrom(self.city, self.origin_lat, self.origin_lon)
         self.assertEqual(type(location), Location)
         self.assertEqual(location.latitude, self.origin_lat)

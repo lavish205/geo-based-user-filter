@@ -9,6 +9,9 @@ class InvalidFilePathException(Exception):
 
 
 class InvalidLatLonException(Exception):
+    """
+    Exception for invalid latitude and longitude provided
+    """
     def __init__(self, message, *args, **kwargs):
         if not message:
             message = "Invalid lat long provided. Lat Long must be of type float"

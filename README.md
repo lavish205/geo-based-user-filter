@@ -32,6 +32,30 @@ Example
 $ python main.py customer_data.txt
 ```
 
+### Other optional arguments:
+```
+usage: main.py [-h] [-radius RADIUS] [-latitude LATITUDE]
+               [-longitude LONGITUDE]
+               file
+
+positional arguments:
+  file                  File path which contains data of customers
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -radius RADIUS        Radius which will be used as a filter criteria
+  -latitude LATITUDE    Latitude of origin from where distance will be
+                        calculated
+  -longitude LONGITUDE  Longitude of origin from where distance will be
+                        calculated
+
+```
+
+Example
+```
+$ python main.py customer_data.txt -radius 50 -latitude 53.339428 -longitude -6.257664
+```
+
 ## Running tests
 
 ```
